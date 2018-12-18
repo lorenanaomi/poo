@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include<string>
 #include<math.h>
@@ -31,7 +32,9 @@ public:
     void setMes (int nrMes, string* n_Mes);
     //afisare
     void afisare();
+    Alarma& operator = (const Alarma& a);
     friend ostream& operator << (ostream&out, const Alarma& a);
+    string& operator[](int index);
 };
 
 int main() {
@@ -71,7 +74,8 @@ int main() {
     mediageom=pow(mediageom,exp);
     cout<<"media geometrica este:"<<mediageom<<endl;
     delete[] a5;
-    
+    a1=a3;
+    cout<<a3;
     return 0;
 }
 
@@ -166,6 +170,21 @@ void Alarma::afisare(){
             cout<<this->mesaje[i]<<endl;
     }
 }
+Alarma& Alarma:: operator = (const Alarma& a){
+    this->nrAlarma=a.nrAlarma;
+    this->ora=a.ora;
+    this->nr_repetari=a.nr_repetari;
+    this->nr_mesaje=a.nr_mesaje;
+    if (this->mesaje!=NULL)
+        delete[] mesaje;
+    if(a.mesaje!=NULL&&a.nr_mesaje>0)
+    {
+        this->mesaje=new string[a.nr_mesaje];
+        for(int i=0; i<a.nr_mesaje;i++)
+            this->mesaje[i]=a.mesaje[i];
+    }
+    return *this;
+}
 ostream& operator << (ostream&out, const Alarma& a){
     cout<<"Alarama cu id-ul "<<a.nrAlarma<<" are melodia cu nr "<<' '<<a.idMelodie;
     cout<<" la ora "<<a.ora;
@@ -177,4 +196,8 @@ ostream& operator << (ostream&out, const Alarma& a){
     }
     return out;
     
+}
+string& Alarma::operator[](int index){
+    if(index>=0 && index<this->nr_mesaje && this->mesaje!=NULL)
+            return this->mesaje[index];
 }
