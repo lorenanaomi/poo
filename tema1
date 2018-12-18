@@ -1,0 +1,180 @@
+#include <iostream>
+#include<string>
+#include<math.h>
+using namespace std;
+class Alarma{
+private:
+    int nrAlarma;
+    const int idMelodie;
+    float ora;
+    int nr_repetari;
+    int nr_mesaje;
+    string* mesaje;
+public:
+    Alarma();
+    Alarma(int nrAlarma, int v_idMelodie, float v_ora, int v_nr_repetari, int v_nr_mesaje, string* v_mesaje);
+    Alarma(int v_idMelodie, float v_ora=12, int v_nr_repetari=1);
+    ~Alarma();
+    Alarma(const Alarma& copie);
+    //get
+    int getNrAlarma();
+    int getIdMelodie();
+    float getOra();
+    int getNrRep();
+    int getNrMes();
+    string* getMesaje();
+    //set
+    void setNrAlarma(int n_nrAl);
+    void setOra (float n_ora);
+    void setNrRep (int n_NrRep);
+    void setNrMes (int n_NrMes);
+    void setMes (int nrMes, string* n_Mes);
+    //afisare
+    void afisare();
+    friend ostream& operator << (ostream&out, const Alarma& a);
+};
+
+int main() {
+   
+    Alarma a1;
+    string mes[]{"Este momentul sa te trezesti","Vei intarzia daca nu te trezesti"};
+    Alarma a2(1,1,12.00,2,2,mes);
+    Alarma a3(2);
+    a1.afisare();
+    a2.afisare();
+    a3.afisare();
+    Alarma a4=a2;
+    cout<<"get"<<endl;
+    cout<<a2.getNrAlarma()<<endl;
+    cout<<a2.getIdMelodie()<<endl;
+    cout<<a2.getOra()<<endl;
+    cout<<a2.getNrRep()<<endl;
+    cout<<a2.getNrMes()<<endl;
+    cout<<a2.getMesaje()<<endl;
+    cout<<a4;
+    cout<<endl<<"set"<<endl;
+    a4.setNrAlarma(3);
+    a4.setOra(15);
+    a4.setNrRep(4);
+    a4.setNrMes(1);
+    a4.setMes(1, new string[1]{"hello"});
+    cout<<a4<<endl;
+    Alarma* a5=new Alarma[4];
+    a5[0].setOra(11.15);
+    a5[1].setOra(12.20);
+    a5[2].setOra(13.30);
+    a5[3].setOra(14.40);
+    float mediageom=1;
+    for(int j=0; j<4; j++)
+        mediageom=mediageom*a5[j].getOra();
+    float exp=(float)1/4;
+    mediageom=pow(mediageom,exp);
+    cout<<"media geometrica este:"<<mediageom<<endl;
+    delete[] a5;
+    
+    return 0;
+}
+
+Alarma::Alarma():idMelodie(0){
+    this->nrAlarma=0;
+    this->ora=13.05;
+    this->nr_repetari=1;
+    this->nr_mesaje=0;
+    this->mesaje=NULL;
+}
+Alarma::Alarma(int v_nrAlarma, int v_idMelodie, float v_ora, int v_nr_repetari, int v_nr_mesaje, string* v_mesaje):idMelodie(v_idMelodie){
+    this->nrAlarma=v_nrAlarma;
+    this->ora=v_ora;
+    this->nr_repetari=v_nr_repetari;
+    this->nr_mesaje=v_nr_mesaje;
+    if(v_mesaje != NULL)
+        {this->mesaje=new string[this->nr_mesaje];
+            for(int i=0; i<this->nr_mesaje; i++)
+                this->mesaje[i]=v_mesaje[i];
+        }
+    }
+Alarma::Alarma(int v_idMelodie, float v_ora, int v_nr_repetari):idMelodie(v_idMelodie){
+    this->nrAlarma=-1;
+    this->ora=v_ora;
+    this->nr_repetari=v_nr_repetari;
+    this->nr_mesaje=0;
+    this->mesaje=NULL;
+    }
+Alarma::~Alarma(){
+    cout<<"apel destructor"<<endl;
+    delete [] mesaje;
+}
+Alarma::Alarma(const Alarma& copie):idMelodie(copie.idMelodie){
+    this->nrAlarma=copie.nrAlarma;
+    this->ora=copie.ora;
+    this->nr_repetari=copie.nr_repetari;
+    this->nr_mesaje=copie.nr_mesaje;
+    this->mesaje=new string[this->nr_mesaje];
+    for(int i=0; i<this->nr_mesaje; i++)
+        this->mesaje[i]=copie.mesaje[i];
+}
+int Alarma::getNrAlarma(){
+    return this->nrAlarma;
+}
+int Alarma:: getIdMelodie(){
+    return this->idMelodie;
+}
+float Alarma::getOra(){
+    return this->ora;
+}
+int Alarma::getNrRep(){
+    return this->nr_repetari;
+}
+int Alarma::getNrMes(){
+    return this->nr_mesaje;
+}
+string* Alarma::getMesaje(){
+    return this->mesaje;
+}
+void Alarma::setNrAlarma(int n_nrAl){
+    if(n_nrAl>0)
+        this->nrAlarma=n_nrAl;
+}
+void Alarma::setOra(float n_ora){
+    this->ora=n_ora;
+}
+void Alarma::setNrRep(int n_NrRep){
+    if(n_NrRep>0)
+        this->nr_repetari=n_NrRep;
+}
+void Alarma::setNrMes (int n_NrMes){
+    if(n_NrMes>0)
+    this->nr_mesaje=n_NrMes;
+}
+void Alarma::setMes (int nrMes, string* n_Mes){
+    if (this->mesaje != NULL)
+        delete[] mesaje;
+    if(nrMes>0 && n_Mes != NULL)
+        {
+            this->mesaje=new string[nrMes];
+            for(int i=0; i<nrMes; i++)
+                this->mesaje[i]=n_Mes[i];
+        }
+}
+void Alarma::afisare(){
+    cout<<"Alarama cu id-ul "<<this->nrAlarma<<" are melodia cu nr "<<' '<<this->idMelodie;
+    cout<<" la ora "<<this->ora;
+    cout<<" se va repeta de "<<this->nr_repetari<<" ori"<<endl;
+    if(this->mesaje!=NULL && this->nr_mesaje>0){
+        cout<<" si va afisa mesajele:"<<endl;
+        for(int i=0; i<this->nr_mesaje; i++)
+            cout<<this->mesaje[i]<<endl;
+    }
+}
+ostream& operator << (ostream&out, const Alarma& a){
+    cout<<"Alarama cu id-ul "<<a.nrAlarma<<" are melodia cu nr "<<' '<<a.idMelodie;
+    cout<<" la ora "<<a.ora;
+    cout<<" se va repeta de "<<a.nr_repetari<<" ori"<<endl;
+    if(a.mesaje!=NULL && a.nr_mesaje>0){
+        cout<<" si va afisa mesajele:"<<endl;
+        for(int i=0; i<a.nr_mesaje; i++)
+            cout<<a.mesaje[i]<<endl;
+    }
+    return out;
+    
+}
