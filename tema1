@@ -1,7 +1,14 @@
+//
+//  main.cpp
+//  tema poo
+//
+//  Created by Lori on 17.12.2018.
+//  Copyright © 2018 Lori. All rights reserved.
+//
 
 #include <iostream>
-#include<string>
-#include<math.h>
+#include <string>
+#include <math.h>
 using namespace std;
 class Alarma{
 private:
@@ -35,8 +42,24 @@ public:
     Alarma& operator = (const Alarma& a);
     friend ostream& operator << (ostream&out, const Alarma& a);
     string& operator[](int index);
+    //pre
+    Alarma& operator ++();
+    Alarma& operator --();
+    //post
+    Alarma operator ++(int);
+    Alarma operator --(int);
+    //
+    Alarma& operator +=(const Alarma& a);
+    bool operator <(const Alarma& a);
+    bool operator >(const Alarma& a);
+    bool operator == (const Alarma& a);
+    bool operator <=(const Alarma& a);
+    bool operator >=(const Alarma& a);
+    bool operator !();
+    float operator ()();
+    
+    
 };
-
 int main() {
    
     Alarma a1;
@@ -198,6 +221,65 @@ ostream& operator << (ostream&out, const Alarma& a){
     
 }
 string& Alarma::operator[](int index){
+    
     if(index>=0 && index<this->nr_mesaje && this->mesaje!=NULL)
-            return this->mesaje[index];
+        return this->mesaje[index];
 }
+Alarma& Alarma::operator++(){
+    this->nr_repetari++;
+    return *this;
+}
+Alarma Alarma::operator++(int){
+    Alarma copie=*this;
+    this->nr_repetari++;
+    return copie;
+}
+Alarma& Alarma::operator--(){
+    this->nr_repetari--;
+    return *this;
+}
+Alarma Alarma::operator--(int){
+    Alarma copie=*this;
+    this->nr_repetari--;
+    return copie;
+}
+Alarma& Alarma::operator+=(const Alarma& a){
+    this->nr_repetari=this->nr_repetari + a.nr_repetari;
+    return *this;
+}
+bool Alarma:: operator <(const Alarma& a){
+    if(this->nrAlarma<a.nrAlarma) return true;
+    else return false;
+}
+bool Alarma::operator >(const Alarma& a){
+    if(this->nrAlarma>a.nrAlarma) return true;
+    else return false;
+    
+}
+bool Alarma::operator == (const Alarma& a){
+    if(this->ora==a.ora) return true;
+    else return false;
+    
+}
+bool Alarma::operator <=(const Alarma& a){
+    if(this->nr_repetari<=a.nr_repetari) return true;
+    else return false;
+    
+}
+bool Alarma::operator >=(const Alarma& a){
+    if(this->nr_repetari>=a.nr_repetari) return true;
+    else return false;
+    
+}
+bool Alarma:: operator !(){
+    if(this->mesaje==NULL) return false;
+    else return true;
+}
+float Alarma::operator()(){
+    float mesaje_e=0;
+    if(this->nr_mesaje>0 && this->mesaje!=NULL){
+        for(int i=0; i<this->nr_mesaje; i++)
+            if(mesaje[i]=="Este momentul sa te trezesti") mesaje_e++;
+        return mesaje_e;
+    }
+    }
