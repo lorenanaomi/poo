@@ -11,7 +11,7 @@
 #include <math.h>
 using namespace std;
 class Alarma{
-private:
+protected:
     int nrAlarma;
     const int idMelodie;
     float ora;
@@ -57,34 +57,64 @@ public:
     bool operator >=(const Alarma& a);
     bool operator !();
     float operator ()();
-    
-    
+    explicit operator int();
+    //ob este primul
+    Alarma operator -(float a);
+    Alarma operator +(float a);
+    //ob este al doilea
+    friend Alarma operator +(float f, Alarma& a);
+    friend Alarma operator -(float f, Alarma& a);
+    //virtuala pura
+    //virtual char getTipAlarma()=0;
 };
+//interfata
+//class Idetalii{
+//public: //virtual float getOraAlarma()=0;
+//};
+//class AlarmaIncendiu:public Alarma, public Idetalii{
+//private: int victime;
+//public: //char getTipAlarma();
+       //float getOraAlarma();
+//};
+//class AlarmaCutremur:public Alarma, public Idetalii{
+//private: int magnitudine;
+//public: //char getTipAlarma();
+        //float getOraAlarma();
+    
+//};
 int main() {
    
     Alarma a1;
-    string mes[]{"Este momentul sa te trezesti","Vei intarzia daca nu te trezesti"};
+    string mes[]{"Este momentul sa te trezesti","Alarma"};
     Alarma a2(1,1,12.00,2,2,mes);
     Alarma a3(2);
     a1.afisare();
     a2.afisare();
     a3.afisare();
-    Alarma a4=a2;
+    
     cout<<"get"<<endl;
     cout<<a2.getNrAlarma()<<endl;
     cout<<a2.getIdMelodie()<<endl;
     cout<<a2.getOra()<<endl;
     cout<<a2.getNrRep()<<endl;
     cout<<a2.getNrMes()<<endl;
-    cout<<a2.getMesaje()<<endl;
-    cout<<a4;
+    string* vector=new string[a2.getNrMes()];
+    vector=a2.getMesaje();
+    for(int i=0;i<a2.getNrMes();i++)
+        cout<<vector[i]<<endl;
+    delete[] vector;
+    Alarma a4=a2;
+    cout<<a4<<endl;
+    
     cout<<endl<<"set"<<endl;
     a4.setNrAlarma(3);
     a4.setOra(15);
     a4.setNrRep(4);
     a4.setNrMes(1);
-    a4.setMes(1, new string[1]{"hello"});
+    a4.setMes(1, new string[1]{"alerta"});
     cout<<a4<<endl;
+    
+    //vector alocat dinamic
     Alarma* a5=new Alarma[4];
     a5[0].setOra(11.15);
     a5[1].setOra(12.20);
@@ -97,8 +127,41 @@ int main() {
     mediageom=pow(mediageom,exp);
     cout<<"media geometrica este:"<<mediageom<<endl;
     delete[] a5;
+    
     a1=a3;
-    cout<<a3;
+    cout<<a3<<endl;
+    cout<<"mesajul 1 al alarmei "<<a2.getNrAlarma()<<" este "<<a2[0]<<endl;
+    cout<<"operator ++"<<endl;
+    a1=a3++;
+    a4=++a3;
+    cout<<a1<<endl<<a4<<endl;
+    cout<<"operator--"<<endl<<a2<<endl;
+    a1=a2--;
+    a4=--a2;
+    cout<<a1<<endl<<a4<<endl<<"operator +="<<endl;
+    a1+=a4;
+    cout<<a1<<endl;
+    cout<<"a1 nu are mesaje: "<< !a1 <<endl;
+    cout<<"nr alarma a1 > nr alarma a4: "<< (a1>a4) <<endl;
+    cout<<"nr alarma a1 < nr alarma a4: "<< (a1<a4) <<endl;
+    cout<<"ora alarma a1 = ora alarma a4: "<< (a1==a4) <<endl;
+    cout<<"nr repetari alarma a1 <= nr repetari alarma a4: "<<(a1<=a4)<<endl;
+    cout<<"nr repetari alarma a1 >= nr repetari alarma a4: "<<(a1>=a4)<<endl;
+    cout<<"nr mesaje 'Alarma' din a2"<<a2()<<endl;
+    int nrALARMA=(int)a1;
+    cout<<"nr alarma a1: "<<nrALARMA<<endl;
+    
+    cout<<a1<<endl;
+    a2=a1+1;
+    a3=a1-1;
+    cout<<a2<<endl<<a3<<endl;
+    
+    cout<<a4<<endl;
+    a2=1+a4;
+    a3=1-a4;
+    cout<<a2<<endl<<a3<<endl;
+    
+    
     return 0;
 }
 
@@ -129,7 +192,8 @@ Alarma::Alarma(int v_idMelodie, float v_ora, int v_nr_repetari):idMelodie(v_idMe
     }
 Alarma::~Alarma(){
     cout<<"apel destructor"<<endl;
-    delete [] mesaje;
+    if (mesaje != NULL)
+        delete [] mesaje;
 }
 Alarma::Alarma(const Alarma& copie):idMelodie(copie.idMelodie){
     this->nrAlarma=copie.nrAlarma;
@@ -216,14 +280,14 @@ ostream& operator << (ostream&out, const Alarma& a){
         cout<<" si va afisa mesajele:"<<endl;
         for(int i=0; i<a.nr_mesaje; i++)
             cout<<a.mesaje[i]<<endl;
-    }
+        }
     return out;
-    
 }
 string& Alarma::operator[](int index){
-    
+    string  a="nu se poate afisa";
     if(index>=0 && index<this->nr_mesaje && this->mesaje!=NULL)
         return this->mesaje[index];
+    else return a;
 }
 Alarma& Alarma::operator++(){
     this->nr_repetari++;
@@ -279,7 +343,34 @@ float Alarma::operator()(){
     float mesaje_e=0;
     if(this->nr_mesaje>0 && this->mesaje!=NULL){
         for(int i=0; i<this->nr_mesaje; i++)
-            if(mesaje[i]=="Este momentul sa te trezesti") mesaje_e++;
+            if(mesaje[i]=="Alarma") mesaje_e++;
         return mesaje_e;
     }
+    else return mesaje_e;
     }
+Alarma Alarma::operator -(float a){
+    Alarma copie=*this;
+    copie.nr_repetari=copie.nr_repetari - a;
+    return copie;
+}
+Alarma Alarma::operator +(float a){
+    Alarma copie=*this;
+    copie.nr_repetari=copie.nr_repetari + a;
+    return copie;
+    
+}
+Alarma operator +(float f, Alarma& a){
+    Alarma copie=a;
+    copie.nr_repetari=copie.nr_repetari + f;
+    return copie;
+    
+}
+Alarma operator -(float f, Alarma& a){
+    Alarma copie=a;
+    copie.nr_repetari=copie.nr_repetari + f;
+    return copie;
+    
+}
+Alarma::operator int(){
+    return this->nrAlarma;
+}
